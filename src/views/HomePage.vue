@@ -1,56 +1,98 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <ion-header>
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title>Calculadora de Compras</ion-title>
       </ion-toolbar>
     </ion-header>
+    <ion-content>
+      <div class="container">
+        <ion-item>
+          <ion-label position="floating">Nome do Produto</ion-label>
+          <ion-input v-model="nomeProduto" type="text"></ion-input>
+        </ion-item>
 
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
+        <ion-item>
+          <ion-label position="floating">Preço (R$)</ion-label>
+          <ion-input v-model="precoProduto" type="number"></ion-input>
+        </ion-item>
 
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+        <ion-button expand="full" @click="adicionarProduto">Adicionar Produto</ion-button>
+
+        <ion-list>
+          <ion-item v-for="(produto, index) in carrinho" :key="index">
+            <ion-label>{{ produto.nome }} - R$ {{ produto.preco.toFixed(2) }}</ion-label>
+            <ion-button @click="removerProduto(index)" color="danger">Remover</ion-button>
+          </ion-item>
+        </ion-list>
+
+        <ion-item>
+          <ion-label>Total: R$ {{ total.toFixed(2) }}</ion-label>
+        </ion-item>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script setup lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+<script>
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonButton,
+  IonList,
+} from '@ionic/vue';
+
+export default {
+  components: {
+    IonPage,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonList,
+  },
+  data() {
+    return {
+      nomeProduto: '',
+      precoProduto: 0,
+      carrinho: [],
+    };
+  },
+  computed: {
+    total() {
+      return this.carrinho.reduce((acc, produto) => acc + produto.preco, 0);
+    },
+  },
+  methods: {
+    adicionarProduto() {
+      if (this.nomeProduto && this.precoProduto > 0) {
+        this.carrinho.push({
+          nome: this.nomeProduto,
+          preco: parseFloat(this.precoProduto),
+        });
+        this.nomeProduto = '';
+        this.precoProduto = 0;
+      }
+    },
+    removerProduto(index) {
+      this.carrinho.splice(index, 1);
+    },
+  },
+};
 </script>
 
 <style scoped>
-#container {
-  text-align: center;
-  
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  
-  color: #8c8c8c;
-  
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+.container {
+  padding: 20px;
 }
 </style>
