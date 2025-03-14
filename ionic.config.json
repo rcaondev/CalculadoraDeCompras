@@ -1,0 +1,7 @@
+{
+  "name": "minhaCalculadoraDeCompras",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
